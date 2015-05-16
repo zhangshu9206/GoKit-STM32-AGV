@@ -324,7 +324,7 @@ void  CmdSendMcuP0(uint8_t *buf)
     if((m_w2m_controlMcu.cmd_tag[1] & 0x10) == 0x10)
     {
 		tmp_cmd_buf = (m_w2m_controlMcu.status_w.cmd_byte[0] & 0x30) >> 4;
-		mySerial.print("tmp_cmd_buf ：");
+		mySerial.print("tmp_cmd_buf:");
 		mySerial.println(tmp_cmd_buf);
 		//00：user define, 01: yellow, 10: purple, 11: pink
 

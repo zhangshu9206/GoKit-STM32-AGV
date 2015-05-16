@@ -69,11 +69,12 @@ struct  _status_writable
 
 struct  _status_readonly
 {
-  uint8_t             ir_status;
+  uint8_t             ir_status;//Infrared1,Infrared2
+  uint8_t             urf_byte;
   uint8_t             temputure;
   uint8_t             humidity;
-  uint8_t             alert_byte;
-  uint8_t             fault_byte;
+  uint8_t             alert_byte;//Alert_1,Alert_2,Fault_IR
+  uint8_t             fault_byte;//Fault_Motor,Fault_URF,Fault_LED,Fault_TemHum
 };
 struct  _pro_headPart
 {
@@ -123,8 +124,9 @@ struct  _m2w_mcuStatus
 {
   pro_headPart        head_part;
   uint8_t             sub_cmd;
-  status_writable     status_w;
-  status_readonly     status_r;
+  //12B
+  status_writable     status_w;//6B
+  status_readonly     status_r;//6B
   uint8_t             sum;
 };
 

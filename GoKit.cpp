@@ -39,6 +39,8 @@ void GoKit_Init()
   #endif
   //温度传感初始
   dht.begin();
+  //红外初始
+  pinMode(IRTPIN, INPUT);
   //LED初始
   leds.init();
   //按键初始
@@ -46,7 +48,7 @@ void GoKit_Init()
   pinMode(KEY2,INPUT_PULLUP); //KEY2 上拉输入
   attachInterrupt(0, gokit_IR_event, CHANGE);//当引脚电平发生变化,触发中断函数gokit_IR_event pin 2
   //定时中断初始
-  MsTimer2::set(1000, gokit_timer); // 1s period
+  MsTimer2::set(1000, gokit_timer); // 1000 = 1s period
   MsTimer2::start();
   //电机初始
   gokit_motor_init();
@@ -444,10 +446,11 @@ char gokit_keydown()
 void gokit_IR_event()
 {
   noInterrupts();
-  if(digitalRead(2))
+  if(digitalRead(IRTPIN))
   {
     #if (DEBUG==1)
     Serial.println("gokit_IR_event! no happen. ");
+    mySerial.println("gokit_IR_event! no happen. ");
     #endif
     m_m2w_mcuStatus.status_r.ir_status &= ~(1<<0);
   }
@@ -455,6 +458,7 @@ void gokit_IR_event()
   {
     #if (DEBUG==1)
     Serial.println("gokit_IR_event! happen. ");
+    mySerial.println("gokit_IR_event! happen. ");
     #endif
     m_m2w_mcuStatus.status_r.ir_status |= (1<<0);
   }
@@ -571,7 +575,7 @@ void gokit_ReportStatus(uint8_t tag)
     m_m2w_mcuStatus.head_part.cmd = CMD_SEND_MODULE_P0;
     m_m2w_mcuStatus.head_part.sn = ++SN;
     m_m2w_mcuStatus.sub_cmd = SUB_CMD_REPORT_MCU_STATUS;
-    m_m2w_mcuStatus.status_w.motor_speed = exchangeBytes(m_m2w_mcuStatus.status_w.motor_speed);
+    //m_m2w_mcuStatus.status_w.motor_speed = exchangeBytes(m_m2w_mcuStatus.status_w.motor_speed);
     m_m2w_mcuStatus.sum = CheckSum((uint8_t *)&m_m2w_mcuStatus, sizeof(m2w_mcuStatus));
     SendToUart((uint8_t *)&m_m2w_mcuStatus, sizeof(m2w_mcuStatus), 0);
   }
@@ -580,12 +584,12 @@ void gokit_ReportStatus(uint8_t tag)
     m_m2w_mcuStatus.head_part.cmd = CMD_SEND_MCU_P0_ACK;
     m_m2w_mcuStatus.head_part.sn = m_w2m_controlMcu.head_part.sn;
     m_m2w_mcuStatus.sub_cmd = SUB_CMD_REQUIRE_STATUS_ACK;
-    m_m2w_mcuStatus.status_w.motor_speed = exchangeBytes(m_m2w_mcuStatus.status_w.motor_speed);
+    //m_m2w_mcuStatus.status_w.motor_speed = exchangeBytes(m_m2w_mcuStatus.status_w.motor_speed);
     m_m2w_mcuStatus.sum = CheckSum((uint8_t *)&m_m2w_mcuStatus, sizeof(m2w_mcuStatus));
     SendToUart((uint8_t *)&m_m2w_mcuStatus, sizeof(m2w_mcuStatus), 0);
   }
     
 
-  m_m2w_mcuStatus.status_w.motor_speed = exchangeBytes(m_m2w_mcuStatus.status_w.motor_speed);
+  //m_m2w_mcuStatus.status_w.motor_speed = exchangeBytes(m_m2w_mcuStatus.status_w.motor_speed);
   memcpy(&m_m2w_mcuStatus_reported, &m_m2w_mcuStatus, sizeof(m2w_mcuStatus));
 }

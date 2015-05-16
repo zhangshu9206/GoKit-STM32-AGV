@@ -7,27 +7,30 @@
 #define   DEBUG           1
 #define   MYSERIAL_DATA   1
 /*************************** HAL define ***************************/
-#define   DHTPIN          3
+
+#define   IRTPIN            2
+#define   DHTPIN            3
+#define   MOTOR_PINA        4
+#define   MOTOR_PINB        5
+#define   KEY1              6
+#define   KEY2              7
+#define   Motor_slpin       10
+#define   Motor_dlpin       11
+#define   Motor_srpin       9
+#define   Motor_drpin       8
+
 #define   DHTTYPE         DHT11 
-#define   KEY1            6
-#define   KEY2            7
+
 #define   KEY1_SHORT_PRESS  1
 #define   KEY1_LONG_PRESS   2
+#define   KEY_LONG_TIMER    3   //( 3s )
 #define   KEY2_SHORT_PRESS  4
 #define   KEY2_LONG_PRESS   8
 #define   NO_KEY            0
 
-#define   Motor_slpin     10
-#define   Motor_dlpin     11
-#define   Motor_srpin     9
-#define   Motor_drpin     8
 #define   SS_RX           12
 #define   SS_TX           13
 
-#define   KEY_LONG_TIMER    3   //( 3s )
-
-#define   MOTOR_PINA      4
-#define   MOTOR_PINB      5
 #define   MOTOR_MAX       100
 #define   MOTOR_MAX1      -100
 #define   MOTOR_MIN       0
