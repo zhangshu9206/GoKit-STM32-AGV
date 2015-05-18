@@ -12,6 +12,9 @@ ChainableLED leds(A5, A4, 1);
 #if(DEBUG==1)
 SoftwareSerial mySerial(SS_RX, SS_TX);
 #endif
+#if(MYSERIAL_DATA==1)
+SoftwareSerial mySerial(SS_RX, SS_TX);
+#endif
 void motortime();
 unsigned char uart_buf[MAX_UART_LEN]={0};
 m2w_returnMcuInfo         m_m2w_returnMcuInfo;
@@ -34,9 +37,14 @@ void GoKit_Init()
 {
   Serial.begin(9600);
   #if(DEBUG==1)
-  //自定义引脚通信SoftwareSerial初始
+  //自定义引脚通信SoftwareSerial初始(Dug)
   mySerial.begin(9600);
   #endif
+  #if(MYSERIAL_DATA==1)
+  //自定义引脚通信SoftwareSerial初始(通信)
+  mySerial.begin(9600);
+  #endif
+  
   //温度传感初始
   dht.begin();
   //红外初始

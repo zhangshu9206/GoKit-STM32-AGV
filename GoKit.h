@@ -4,8 +4,8 @@
 #include "protocol.h"
 #include "MotorCar.h"
 
-#define   DEBUG           1
-#define   MYSERIAL_DATA   1
+#define   DEBUG             0  //软件串口打印
+#define   MYSERIAL_DATA     1  //是否使用自定义软件串口通讯
 /*************************** HAL define ***************************/
 
 #define   IRTPIN            2
@@ -28,18 +28,18 @@
 #define   KEY2_LONG_PRESS   8
 #define   NO_KEY            0
 
-#define   SS_RX           12
-#define   SS_TX           13
+#define   SS_RX             12
+#define   SS_TX             13
 
-#define   MOTOR_MAX       100
-#define   MOTOR_MAX1      -100
-#define   MOTOR_MIN       0
+#define   MOTOR_MAX         100
+#define   MOTOR_MAX1        -100
+#define   MOTOR_MIN         0
 /******************************************************************/
 
-#define   MAX_SEND_NUM    3   
-#define   MAX_SEND_TIME   200
-#define   MAX_UART_LEN    100
-#define   UART_RX_BUF_SIZE 100
+#define   MAX_SEND_NUM      3   
+#define   MAX_SEND_TIME     200
+#define   MAX_UART_LEN      100
+#define   UART_RX_BUF_SIZE  100
 
 extern MotorCar Motor;
 extern  unsigned char uart_buf[MAX_UART_LEN];
