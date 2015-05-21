@@ -59,8 +59,8 @@ void  CmdSendMcuP0(uint8_t *buf)
 			gokit_setColorRGB(254, 0, 0);
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] | 0x01);
 			#if MYSERIAL_DATA
-			//mySerial.write("FF 00 02 00 FF");//向小车发送手动模式的对应指令FF130000FF
-			mySerial.write(&Readmv[0],5);
+			mySerial.print("F300F");//向小车发送手动模式的对应指令FF130000FF
+			//mySerial.write(&Readmv[0],5);
 			#endif
 		}
 		else
@@ -69,7 +69,7 @@ void  CmdSendMcuP0(uint8_t *buf)
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0xFE);
 			#if MYSERIAL_DATA
 			//mySerial.write(&Readmv_stop[0],5);//停止FF000000FF
-            mySerial.write(&Readmv_stop[0],5);
+                        mySerial.print("F000F");
 			#endif
 		}
     }
@@ -86,7 +86,8 @@ void  CmdSendMcuP0(uint8_t *buf)
 			Motor.forward(250);		
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] | 0x02);
 			#if MYSERIAL_DATA
-			mySerial.write(&Readmv[0],5);//FF000200FF
+			//mySerial.write(&Readmv[0],5);//FF000200FF
+                        mySerial.print("F020F");
 			#endif
 		}
 		else
@@ -94,7 +95,8 @@ void  CmdSendMcuP0(uint8_t *buf)
 			Motor.stop();
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0xFD);
 			#if MYSERIAL_DATA
-			mySerial.write(&Readmv_stop[0],5);
+			//mySerial.write(&Readmv_stop[0],5);
+                        mySerial.print("F000F");
 			#endif
 		}
 		
@@ -112,7 +114,8 @@ void  CmdSendMcuP0(uint8_t *buf)
 			Motor.back(250);
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] | 0x04);
 			#if MYSERIAL_DATA
-			mySerial.write(&Readmv[0],5);
+			//mySerial.write(&Readmv[0],5);
+                        mySerial.print("F010F");
 			#endif
 		}
 		else
@@ -120,7 +123,8 @@ void  CmdSendMcuP0(uint8_t *buf)
 			Motor.stop();
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0xFB);
 			#if MYSERIAL_DATA
-			mySerial.write(&Readmv_stop[0],5);
+			//mySerial.write(&Readmv_stop[0],5);
+                        mySerial.print("F000F");
 			#endif
 		}
 		
@@ -138,7 +142,8 @@ void  CmdSendMcuP0(uint8_t *buf)
 			Motor.turnLeft(250);
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] | 0x08);
 			#if MYSERIAL_DATA
-			mySerial.write(&Readmv[0],5);
+			//mySerial.write(&Readmv[0],5);
+                        mySerial.print("F050F");
 			#endif
 		}
 		else
@@ -146,7 +151,8 @@ void  CmdSendMcuP0(uint8_t *buf)
 			Motor.stop();
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0xF7);
 			#if MYSERIAL_DATA
-			mySerial.write(&Readmv_stop[0],5);
+			//mySerial.write(&Readmv_stop[0],5);
+                        mySerial.print("F000F");
 			#endif
 		}
 		
@@ -165,7 +171,8 @@ void  CmdSendMcuP0(uint8_t *buf)
 			Motor.turnRight(250);
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] | 0x10);
 			#if MYSERIAL_DATA
-			mySerial.write(&Readmv[0],5);
+			//mySerial.write(&Readmv[0],5);
+                        mySerial.print("F060F");
 			#endif
 		}
 		else
@@ -173,7 +180,8 @@ void  CmdSendMcuP0(uint8_t *buf)
 			Motor.stop();
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0xEF);
 			#if MYSERIAL_DATA
-			mySerial.write(&Readmv_stop[0],5);
+			//mySerial.write(&Readmv_stop[0],5);
+                        mySerial.print("F000F");
 			#endif
 		}
 
@@ -192,7 +200,8 @@ void  CmdSendMcuP0(uint8_t *buf)
 			Motor.turnLeftOrigin(250);
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] | 0x20);
 			#if MYSERIAL_DATA
-			mySerial.write(&Readmv[0],5);
+			//mySerial.write(&Readmv[0],5);
+                        mySerial.print("F030F");
 			#endif
 		}
 		else
@@ -200,7 +209,8 @@ void  CmdSendMcuP0(uint8_t *buf)
 			Motor.stop();
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0xDF);
 			#if MYSERIAL_DATA
-			mySerial.write(&Readmv_stop[0],5);
+			//mySerial.write(&Readmv_stop[0],5);
+                        mySerial.print("F000F");
 			#endif
 		}
 
@@ -219,7 +229,8 @@ void  CmdSendMcuP0(uint8_t *buf)
 			Motor.turnRightOrigin(250);
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] | 0x40);
 			#if MYSERIAL_DATA
-			mySerial.write(&Readmv[0],5);
+			//mySerial.write(&Readmv[0],5);
+                        mySerial.print("F040F");
 			#endif
 		}
 		else
@@ -227,7 +238,8 @@ void  CmdSendMcuP0(uint8_t *buf)
 			Motor.stop();
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0xFFBF);
 			#if MYSERIAL_DATA
-			mySerial.write(&Readmv_stop[0],5);
+			//mySerial.write(&Readmv_stop[0],5);
+                        mySerial.print("F000F");
 			#endif
 		}
 
@@ -242,7 +254,8 @@ void  CmdSendMcuP0(uint8_t *buf)
 			Motor.stop();
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] | 0x80);
 			#if MYSERIAL_DATA
-			mySerial.write(&Readmv_stop[0],5);
+			//mySerial.write(&Readmv_stop[0],5);
+                        mySerial.print("F000F");
 			#endif
 		}
 		else
@@ -250,7 +263,8 @@ void  CmdSendMcuP0(uint8_t *buf)
 			Motor.stop();
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0x7F);
 			#if MYSERIAL_DATA
-			mySerial.write(&Readmv_stop[0],5);
+			//mySerial.write(&Readmv_stop[0],5);
+                        mySerial.print("F000F");
 			#endif
 		}
 
