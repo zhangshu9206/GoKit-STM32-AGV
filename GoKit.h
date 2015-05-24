@@ -6,6 +6,7 @@
 
 #define   DEBUG             0  //软件串口打印
 #define   MYSERIAL_DATA     1  //是否使用自定义软件串口通讯
+#define   MYSERIAL1_DATA    1  //是否使用自定义软件串口1通讯
 /*************************** HAL define ***************************/
 
 #define   IRTPIN            2
@@ -16,8 +17,10 @@
 #define   KEY2              7
 #define   Motor_slpin       10
 #define   Motor_dlpin       11
-#define   Motor_srpin       9
-#define   Motor_drpin       8
+#define   SS1_RX            8
+#define   SS1_TX            9
+#define   SS_RX             12
+#define   SS_TX             13
 
 #define   DHTTYPE         DHT11 
 
@@ -27,9 +30,6 @@
 #define   KEY2_SHORT_PRESS  4
 #define   KEY2_LONG_PRESS   8
 #define   NO_KEY            0
-
-#define   SS_RX             12
-#define   SS_TX             13
 
 #define   MOTOR_MAX         100
 #define   MOTOR_MAX1        -100
@@ -41,9 +41,10 @@
 #define   MAX_UART_LEN      100
 #define   UART_RX_BUF_SIZE  100
 
-extern MotorCar Motor;
+//extern MotorCar Motor;
 extern  unsigned char uart_buf[MAX_UART_LEN];
 extern SoftwareSerial mySerial;
+extern SoftwareSerial mySerial_1;
 extern DHT dht;
 extern unsigned long last_time;
 extern m2w_returnMcuInfo         m_m2w_returnMcuInfo;

@@ -16,10 +16,11 @@ void setup()
   GoKit_Init();
   #if (DEBUG==1)
   Serial.println("GoKit init  OK!");
-  mySerial.println("GoKit init  OK! - mySerial");
   Serial.print("freeMemory()=");
   Serial.println(freeMemory());
   #endif
+  mySerial.println("GoKit init  OK! - mySerial");
+  mySerial_1.println("GoKit init  OK! - mySerial_1");
 }
 void loop()
 {  

@@ -7,6 +7,9 @@ extern SSD1306 oled;
 
 unsigned long                   check_status_time=0;
 unsigned long                   report_status_idle_time=0;
+static unsigned char rs_rec_flag = 0; 
+static unsigned char rs_buffer[3]; 
+static unsigned char rs_i; 
 
 unsigned char CheckSum( unsigned char *buf, int packLen )
 {
@@ -83,7 +86,7 @@ void  CmdSendMcuP0(uint8_t *buf)
 			mySerial.println("Mode_forward");
 			#endif
 			
-			Motor.forward(250);		
+			//Motor.forward(250);		
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] | 0x02);
 			#if MYSERIAL_DATA
 			//mySerial.write(&Readmv[0],5);//FF000200FF
@@ -92,7 +95,7 @@ void  CmdSendMcuP0(uint8_t *buf)
 		}
 		else
 		{
-			Motor.stop();
+			//Motor.stop();
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0xFD);
 			#if MYSERIAL_DATA
 			//mySerial.write(&Readmv_stop[0],5);
@@ -111,7 +114,7 @@ void  CmdSendMcuP0(uint8_t *buf)
 			mySerial.println("Mode_back");
 			#endif
 			
-			Motor.back(250);
+			//Motor.back(250);
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] | 0x04);
 			#if MYSERIAL_DATA
 			//mySerial.write(&Readmv[0],5);
@@ -120,7 +123,7 @@ void  CmdSendMcuP0(uint8_t *buf)
 		}
 		else
 		{
-			Motor.stop();
+			//Motor.stop();
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0xFB);
 			#if MYSERIAL_DATA
 			//mySerial.write(&Readmv_stop[0],5);
@@ -139,7 +142,7 @@ void  CmdSendMcuP0(uint8_t *buf)
 			mySerial.println("Mode_turnLeft");
 			#endif
 			
-			Motor.turnLeft(250);
+			//Motor.turnLeft(250);
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] | 0x08);
 			#if MYSERIAL_DATA
 			//mySerial.write(&Readmv[0],5);
@@ -148,7 +151,7 @@ void  CmdSendMcuP0(uint8_t *buf)
 		}
 		else
 		{
-			Motor.stop();
+			//Motor.stop();
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0xF7);
 			#if MYSERIAL_DATA
 			//mySerial.write(&Readmv_stop[0],5);
@@ -168,7 +171,7 @@ void  CmdSendMcuP0(uint8_t *buf)
 			mySerial.println("Mode_turnRight");
 			#endif
 			
-			Motor.turnRight(250);
+			//Motor.turnRight(250);
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] | 0x10);
 			#if MYSERIAL_DATA
 			//mySerial.write(&Readmv[0],5);
@@ -177,7 +180,7 @@ void  CmdSendMcuP0(uint8_t *buf)
 		}
 		else
 		{
-			Motor.stop();
+			//Motor.stop();
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0xEF);
 			#if MYSERIAL_DATA
 			//mySerial.write(&Readmv_stop[0],5);
@@ -197,7 +200,7 @@ void  CmdSendMcuP0(uint8_t *buf)
 			mySerial.println("Mode_turnLeftOrigin");
 			#endif
 			
-			Motor.turnLeftOrigin(250);
+			//Motor.turnLeftOrigin(250);
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] | 0x20);
 			#if MYSERIAL_DATA
 			//mySerial.write(&Readmv[0],5);
@@ -206,7 +209,7 @@ void  CmdSendMcuP0(uint8_t *buf)
 		}
 		else
 		{
-			Motor.stop();
+			//Motor.stop();
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0xDF);
 			#if MYSERIAL_DATA
 			//mySerial.write(&Readmv_stop[0],5);
@@ -226,7 +229,7 @@ void  CmdSendMcuP0(uint8_t *buf)
 			mySerial.println("Mode_turnRightOrigin");
 			#endif
 			
-			Motor.turnRightOrigin(250);
+			//Motor.turnRightOrigin(250);
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] | 0x40);
 			#if MYSERIAL_DATA
 			//mySerial.write(&Readmv[0],5);
@@ -235,7 +238,7 @@ void  CmdSendMcuP0(uint8_t *buf)
 		}
 		else
 		{
-			Motor.stop();
+			//Motor.stop();
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0xFFBF);
 			#if MYSERIAL_DATA
 			//mySerial.write(&Readmv_stop[0],5);
@@ -251,7 +254,7 @@ void  CmdSendMcuP0(uint8_t *buf)
 		if((m_w2m_controlMcu.status_w.cmd_byte[1] & 0x80) == 0x80)
 		{
 			mySerial.println("Mode_stop");
-			Motor.stop();
+			//Motor.stop();
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] | 0x80);
 			#if MYSERIAL_DATA
 			//mySerial.write(&Readmv_stop[0],5);
@@ -260,7 +263,7 @@ void  CmdSendMcuP0(uint8_t *buf)
 		}
 		else
 		{
-			Motor.stop();
+			//Motor.stop();
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0x7F);
 			#if MYSERIAL_DATA
 			//mySerial.write(&Readmv_stop[0],5);
@@ -276,28 +279,28 @@ void  CmdSendMcuP0(uint8_t *buf)
 		byte Readmv[5]={255,65,00,00,255};
 		if((m_w2m_controlMcu.status_w.cmd_byte[0] & 0x01) == 0x01)
 		{
-			#if (DEBUG==1)
+			#if (MYSERIAL_DATA==1)
 			mySerial.println("Action_group1");
 			#endif
-			
-			Serial.println("#1GC1\r\n");
+			#if (MYSERIAL1_DATA==1)
+			//mySerial.write(&Readmv_stop[0],5);//"FF410000FF"
+                        mySerial_1.println("#1GC1\r\n");
+			#endif	
+		
 			m_m2w_mcuStatus.status_w.cmd_byte[0] = (m_m2w_mcuStatus.status_w.cmd_byte[0] | 0x01);
-			#if MYSERIAL_DATA
-			mySerial.write(&Readmv_stop[0],5);//"FF410000FF"
-			#endif
 		}
 		else
 		{
-			#if (DEBUG==1)
-			Serial.println("#1GC1\r\n");
+			#if (MYSERIAL_DATA==1)
+			mySerial.println("Action_group1");
+			#endif
+			#if (MYSERIAL1_DATA==1)
+			//mySerial.write(&Readmv_stop[0],5);//"FF410000FF"
+                        mySerial_1.println("#1GC1\r\n");
 			#endif
 			
 			m_m2w_mcuStatus.status_w.cmd_byte[0] = (m_m2w_mcuStatus.status_w.cmd_byte[0] & 0xFE);
-			#if MYSERIAL_DATA
-			mySerial.write(&Readmv_stop[0],5);//"FF410000FF"
-			#endif
 		}
-
 	}
 
 	//执行机械臂动作组二
@@ -306,25 +309,28 @@ void  CmdSendMcuP0(uint8_t *buf)
 		byte Readmv[5]={255,66,00,00,255};
 		if((m_w2m_controlMcu.status_w.cmd_byte[0] & 0x02) == 0x02)
 		{
-			#if (DEBUG==1)
+  			#if (MYSERIAL_DATA==1)
 			mySerial.println("Action_group2");
 			#endif
-			
-			Serial.println("#2GC1\r\n");
-			m_m2w_mcuStatus.status_w.cmd_byte[0] = (m_m2w_mcuStatus.status_w.cmd_byte[0] | 0x02);
-			#if MYSERIAL_DATA
-			mySerial.write(&Readmv_stop[0],5);//"FF420000FF"
+			#if (MYSERIAL1_DATA==1)
+			//mySerial.write(&Readmv_stop[0],5);//"FF420000FF"
+                        mySerial_1.println("#2GC1\r\n");
 			#endif
+
+			m_m2w_mcuStatus.status_w.cmd_byte[0] = (m_m2w_mcuStatus.status_w.cmd_byte[0] | 0x02);
 		}
 		else
 		{
-			Serial.println("#2GC1\r\n");
-			m_m2w_mcuStatus.status_w.cmd_byte[0] = (m_m2w_mcuStatus.status_w.cmd_byte[0] & 0xFD);
-			#if MYSERIAL_DATA
-			mySerial.write(&Readmv_stop[0],5);//"FF420000FF"
+  			#if (MYSERIAL_DATA==1)
+			mySerial.println("Action_group2");
 			#endif
-		}
+			#if (MYSERIAL1_DATA==1)
+			//mySerial.write(&Readmv_stop[0],5);//"FF420000FF"
+                        mySerial_1.println("#2GC1\r\n");
+			#endif
 
+			m_m2w_mcuStatus.status_w.cmd_byte[0] = (m_m2w_mcuStatus.status_w.cmd_byte[0] & 0xFD);
+		}
 	}
 	
 	//执行机械臂动作还原
@@ -333,25 +339,28 @@ void  CmdSendMcuP0(uint8_t *buf)
 		byte Readmv[5]={255,64,00,00,255};
 		if((m_w2m_controlMcu.status_w.cmd_byte[0] & 0x04) == 0x04)
 		{
-			#if (DEBUG==1)
+    			#if (MYSERIAL_DATA==1)
 			mySerial.println("Action_group_Reduction");
 			#endif
-			
-			Serial.println("#2GC1\r\n");
-			m_m2w_mcuStatus.status_w.cmd_byte[0] = (m_m2w_mcuStatus.status_w.cmd_byte[0] | 0x04);
-			#if MYSERIAL_DATA
-			mySerial.write(&Readmv[0],5);//"FF400000FF"
+			#if (MYSERIAL1_DATA==1)
+			//mySerial.write(&Readmv_stop[0],5);//"FF400000FF"
+                        mySerial_1.println("#3GC1\r\n");
 			#endif
+
+			m_m2w_mcuStatus.status_w.cmd_byte[0] = (m_m2w_mcuStatus.status_w.cmd_byte[0] | 0x04);
 		}
 		else
 		{
-			Serial.println("#2GC1\r\n");
-			m_m2w_mcuStatus.status_w.cmd_byte[0] = (m_m2w_mcuStatus.status_w.cmd_byte[0] & 0xFB);
-			#if MYSERIAL_DATA
-			mySerial.write(&Readmv[0],5);//"FF400000FF"
+    			#if (MYSERIAL_DATA==1)
+			mySerial.println("Action_group_Reduction");
 			#endif
-		}
+			#if (MYSERIAL1_DATA==1)
+			//mySerial.write(&Readmv_stop[0],5);//"FF400000FF"
+                        mySerial_1.println("#3GC1\r\n");
+			#endif
 
+			m_m2w_mcuStatus.status_w.cmd_byte[0] = (m_m2w_mcuStatus.status_w.cmd_byte[0] & 0xFB);
+		}
 	}
 	
 	//循迹模式
@@ -374,7 +383,7 @@ void  CmdSendMcuP0(uint8_t *buf)
 		{
 			byte Readmv[5]={255,19,00,00,255};
 			//中断
-			Motor.stop();
+			//Motor.stop();
 			m_m2w_mcuStatus.status_w.cmd_byte[0] = (m_m2w_mcuStatus.status_w.cmd_byte[0] & 0xF7);
 			#if MYSERIAL_DATA
 			mySerial.write(&Readmv_stop[0],5);
@@ -617,29 +626,108 @@ void Check_Status()
     for(i=0; i<sizeof(status_readonly); i++)
     {
       if(*(index_new+i) != *(index_old+i))
-      {
-        diff += 1;
-       #if(DEBUG==1) 
-        Serial.print("status_r ");Serial.println(i,DEC);
-        Serial.print("old: ");Serial.println(index_old[i]);
-        Serial.print("new: ");Serial.println(index_new[i]);
-        Serial.print("temp:");Serial.println(m_m2w_mcuStatus.status_r.temputure,DEC);
-        Serial.print("hum: ");Serial.println(m_m2w_mcuStatus.status_r.humidity,DEC);
-      #endif
-      }
+            {
+                diff += 1;
+                #if(DEBUG==1)
+                Serial.print("status_r "); Serial.println(i, DEC);
+                Serial.print("old: "); Serial.println(index_old[i]);
+                Serial.print("new: "); Serial.println(index_new[i]);
+                Serial.print("temp:"); Serial.println(m_m2w_mcuStatus.status_r.temputure, DEC);
+                Serial.print("hum: "); Serial.println(m_m2w_mcuStatus.status_r.humidity, DEC);
+                #endif
+            }
+        }
     }
-  }
-  if(diff > 0 || gokit_time_s()-report_status_idle_time > GOKIT_REPORT_TIME)
-  {
-   gokit_ReportStatus(REPORT_STATUS);
-   report_status_idle_time = gokit_time_s(); 
-  }
+    if(diff > 0 || gokit_time_s() - report_status_idle_time > GOKIT_REPORT_TIME)
+    {
+        gokit_ReportStatus(REPORT_STATUS);
+        report_status_idle_time = gokit_time_s();
+    }
 
 }
-void GoKit_Handle()
+
+void rs_Communication_Decode(void)
+{
+    {
+        switch(rs_buffer[1])
+        {
+        case '1':
+			#if (MYSERIAL1_DATA==1)
+			//mySerial.write(&Readmv_stop[0],5);//"FF410000FF"
+            mySerial_1.println("#1GC1\r\n");
+			#endif	
+
+            return;
+        case '2':
+			#if (MYSERIAL1_DATA==1)
+			//mySerial.write(&Readmv_stop[0],5);//"FF420000FF"
+            mySerial_1.println("#2GC1\r\n");
+			#endif
+
+            return;
+			#if (MYSERIAL1_DATA==1)
+			//mySerial.write(&Readmv_stop[0],5);//"FF400000FF"
+            mySerial_1.println("#3GC1\r\n");
+			#endif
+
+            return;
+
+
+            return;
+        default:
+            return;
+        }
+    }
+    else
+    {
+        return;
+    }
+}
+
+void Handle_uartss_data(void)
+{
+    
+    if(mySerial.available())
+    {
+        unsigned char outputByte = 0; 
+        outputByte = mySerial.read(); 
+        
+        //Arduino����Ϣ����
+        if(rs_rec_flag == 0)
+        {
+            if(outputByte == 'F')
+            {
+                rs_rec_flag = 1;
+                rs_i = 0;
+            }
+        }
+        else
+        {
+            if(outputByte == 'F')
+            {
+                rs_rec_flag = 0;
+                if(rs_i == 3)
+                {
+                    rs_Communication_Decode();
+                    //UART_init(); //	���������������
+                }
+                rs_i = 0;
+            }
+            else
+            {
+                rs_buffer[rs_i] = outputByte;
+                rs_i++;
+            }
+        }
+    }
+    
+}
+
+void GoKit_Handle(void)
 {
   Handle_uartdata(  uart_buf,get_onepackage(uart_buf));
   Handle_keyeven();
   Check_Status();
+  Handle_uartss_data(); //��������0������
 }
 

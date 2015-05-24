@@ -6,14 +6,17 @@
 #include <SoftwareSerial.h>
 #include "GoKit.h"
 
-MotorCar Motor(Motor_slpin,Motor_dlpin,Motor_srpin,Motor_drpin);// _slpin(PWM),_dlpin, _srpin(PWM),_drpin
+//MotorCar Motor(Motor_slpin,Motor_dlpin,Motor_srpin,Motor_drpin);// _slpin(PWM),_dlpin, _srpin(PWM),_drpin
 DHT dht(DHTPIN, DHTTYPE);
 ChainableLED leds(A5, A4, 1);
 #if(DEBUG==1)
-SoftwareSerial mySerial(SS_RX, SS_TX);
+//SoftwareSerial mySerial(SS_RX, SS_TX);
 #endif
 #if(MYSERIAL_DATA==1)
 SoftwareSerial mySerial(SS_RX, SS_TX);
+#endif
+#if(MYSERIAL1_DATA==1)
+SoftwareSerial mySerial_1(SS1_RX, SS1_TX);
 #endif
 void motortime();
 unsigned char uart_buf[MAX_UART_LEN]={0};
@@ -44,7 +47,10 @@ void GoKit_Init()
   //自定义引脚通信SoftwareSerial初始(通信)
   mySerial.begin(9600);
   #endif
-  
+  #if(MYSERIAL1_DATA==1)
+  //自定义引脚通信SoftwareSerial_1初始(通信)
+  mySerial_1.begin(9600);
+  #endif
   //温度传感初始
   dht.begin();
   //红外初始

@@ -141,5 +141,7 @@ unsigned char CheckSum( unsigned char *buf, int packLen );
 void Handle_uartdata(unsigned char *buf,int len);
 void Handle_keyeven();
 void Check_Status();
+void rs_Communication_Decode(void);
+void Handle_uartss_data(void);
 void GoKit_Handle();
 #endif
