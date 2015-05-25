@@ -43,14 +43,17 @@ void GoKit_Init()
   //自定义引脚通信SoftwareSerial初始(Dug)
   mySerial.begin(9600);
   #endif
-  #if(MYSERIAL_DATA==1)
-  //自定义引脚通信SoftwareSerial初始(通信)
-  mySerial.begin(9600);
-  #endif
+  //多个软串口同时使用，只能读取一个串口数据（写不影响）
+  //读取的串口选择原则：初始时 谁最后初始只能监听谁
+  //解决方法：循环使用mySerial.listen();
   #if(MYSERIAL1_DATA==1)
   //自定义引脚通信SoftwareSerial_1初始(通信)
   mySerial_1.begin(9600);
   #endif
+  #if(MYSERIAL_DATA==1)
+  //自定义引脚通信SoftwareSerial初始(通信)
+  mySerial.begin(9600);
+  #endif 
   //温度传感初始
   dht.begin();
   //红外初始

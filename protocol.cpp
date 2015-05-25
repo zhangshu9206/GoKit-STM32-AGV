@@ -72,6 +72,7 @@ void  CmdSendMcuP0(uint8_t *buf)
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0xFE);
 			#if MYSERIAL_DATA
 			//mySerial.write(&Readmv_stop[0],5);//停止FF000000FF
+                        mySerial.println("Action_group1");//貌似来这么一句就搞定了？！
                         mySerial.print("F000F");
 			#endif
 		}
@@ -648,6 +649,7 @@ void Check_Status()
 
 void rs_Communication_Decode(void)
 {
+    if(rs_buffer[0] == '4')
     {
         switch(rs_buffer[1])
         {
@@ -665,6 +667,7 @@ void rs_Communication_Decode(void)
 			#endif
 
             return;
+        case '0':
 			#if (MYSERIAL1_DATA==1)
 			//mySerial.write(&Readmv_stop[0],5);//"FF400000FF"
             mySerial_1.println("#3GC1\r\n");
@@ -672,6 +675,7 @@ void rs_Communication_Decode(void)
 
             return;
 
+        case '3':
 
             return;
         default:
@@ -686,13 +690,16 @@ void rs_Communication_Decode(void)
 
 void Handle_uartss_data(void)
 {
-    
-    if(mySerial.available())
+    unsigned char outputByte; 
+
+    if(mySerial.available() > 0 )
     {
         unsigned char outputByte = 0; 
         outputByte = mySerial.read(); 
         
-        //Arduino����Ϣ����
+        //Serial.print("outputByte:");
+        //Serial.println(outputByte);
+        
         if(rs_rec_flag == 0)
         {
             if(outputByte == 'F')
@@ -718,9 +725,9 @@ void Handle_uartss_data(void)
                 rs_buffer[rs_i] = outputByte;
                 rs_i++;
             }
-        }
-    }
-    
+        } 
+    } 
+  
 }
 
 void GoKit_Handle(void)
@@ -728,6 +735,6 @@ void GoKit_Handle(void)
   Handle_uartdata(  uart_buf,get_onepackage(uart_buf));
   Handle_keyeven();
   Check_Status();
-  Handle_uartss_data(); //��������0������
+  Handle_uartss_data();
 }
 
