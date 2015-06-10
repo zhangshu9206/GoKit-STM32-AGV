@@ -2,7 +2,7 @@
 #include <SSD1306.h>
 #include "protocol.h"
 #include "GoKit.h"
-#include "MotorCar.h"
+#include "MotorCar.h" 
 extern SSD1306 oled;
 
 unsigned long                   check_status_time=0;
@@ -10,6 +10,11 @@ unsigned long                   report_status_idle_time=0;
 static unsigned char rs_rec_flag = 0; 
 static unsigned char rs_buffer[3]; 
 static unsigned char rs_i; 
+
+int comtemp;
+int IRR=8;//¶¨ÒåÓÒ²àÑ°Ïß´«¸ĞÆ÷½Ó¿Ú
+int IRM=9;//¶¨ÒåÖĞ¼äÑ°Ïß´«¸ĞÆ÷½Ó¿Ú
+int IRL=10;//¶¨Òå×ó²àÑ°Ïß´«¸ĞÆ÷½Ó¿Ú
 
 unsigned char CheckSum( unsigned char *buf, int packLen )
 {
@@ -26,7 +31,7 @@ unsigned char CheckSum( unsigned char *buf, int packLen )
 void  CmdSendMcuP0(uint8_t *buf)
 {
   uint8_t   tmp_cmd_buf;
-  byte Readmv_stop[5]={255,00,00,00,255};//åœæ­¢
+  byte Readmv_stop[5]={255,00,00,00,255};//Í£Ö¹
   if(buf == NULL) return ;
   
   memcpy(&m_w2m_controlMcu, buf, sizeof(w2m_controlMcu));
@@ -36,7 +41,7 @@ void  CmdSendMcuP0(uint8_t *buf)
   
   if(m_w2m_controlMcu.sub_cmd == SUB_CMD_CONTROL_MCU)
   {
-    //å‘é€P0æ¥æ”¶ç¡®è®¤
+    //·¢ËÍP0½ÓÊÕÈ·ÈÏ
     SendCommonCmd(CMD_SEND_MCU_P0_ACK, m_w2m_controlMcu.head_part.sn);
     
     #if(DEBUG==1)
@@ -48,7 +53,7 @@ void  CmdSendMcuP0(uint8_t *buf)
     mySerial.println(m_w2m_controlMcu.cmd_tag[2]);
     #endif
     
-    //control LED R && æ‰‹åŠ¨æ§åˆ¶æ¨¡å¼
+    //control LED R && ÊÖ¶¯¿ØÖÆÄ£Ê½
     if((m_w2m_controlMcu.cmd_tag[2] & 0x01) == 0x01)
     {
 		//0 bit, 1: R on, 0: R off;
@@ -61,23 +66,16 @@ void  CmdSendMcuP0(uint8_t *buf)
 			
 			gokit_setColorRGB(254, 0, 0);
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] | 0x01);
-			#if MYSERIAL_DATA
-			mySerial.print("F300F");//å‘å°è½¦å‘é€æ‰‹åŠ¨æ¨¡å¼çš„å¯¹åº”æŒ‡ä»¤FF130000FF
-			//mySerial.write(&Readmv[0],5);
-			#endif
+
 		}
 		else
 		{
 			gokit_setColorRGB(0, 0, 0);
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0xFE);
-			#if MYSERIAL_DATA
-			//mySerial.write(&Readmv_stop[0],5);//åœæ­¢FF000000FF
-                        mySerial.println("Action_group1");//è²Œä¼¼æ¥è¿™ä¹ˆä¸€å¥å°±æå®šäº†ï¼Ÿï¼
-                        mySerial.print("F000F");
-			#endif
+
 		}
     }
-	//å‰è¿›
+	//Ç°½ø
 	if((m_w2m_controlMcu.cmd_tag[2] & 0x02) == 0x02)
     {
 		if((m_w2m_controlMcu.status_w.cmd_byte[1] & 0x02) == 0x02)
@@ -87,25 +85,19 @@ void  CmdSendMcuP0(uint8_t *buf)
 			mySerial.println("Mode_forward");
 			#endif
 			
-			//Motor.forward(250);		
+            Motor.forward(250);
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] | 0x02);
-			#if MYSERIAL_DATA
-			//mySerial.write(&Readmv[0],5);//FF000200FF
-                        mySerial.print("F020F");
-			#endif
+
 		}
 		else
 		{
-			//Motor.stop();
+            Motor.stop();
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0xFD);
-			#if MYSERIAL_DATA
-			//mySerial.write(&Readmv_stop[0],5);
-                        mySerial.print("F000F");
-			#endif
+
 		}
 		
 	}
-	//åé€€
+	//ºóÍË
 	if((m_w2m_controlMcu.cmd_tag[2] & 0x04) == 0x04)
     {
 		if((m_w2m_controlMcu.status_w.cmd_byte[1] & 0x04) == 0x04)
@@ -115,83 +107,20 @@ void  CmdSendMcuP0(uint8_t *buf)
 			mySerial.println("Mode_back");
 			#endif
 			
-			//Motor.back(250);
+            Motor.back(250);
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] | 0x04);
-			#if MYSERIAL_DATA
-			//mySerial.write(&Readmv[0],5);
-                        mySerial.print("F010F");
-			#endif
+
 		}
 		else
 		{
-			//Motor.stop();
+            Motor.stop();
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0xFB);
-			#if MYSERIAL_DATA
-			//mySerial.write(&Readmv_stop[0],5);
-                        mySerial.print("F000F");
-			#endif
+
 		}
 		
 	}
-	//å·¦è½¬
-	if((m_w2m_controlMcu.cmd_tag[2] & 0x08) == 0x08)
-    {
-		if((m_w2m_controlMcu.status_w.cmd_byte[1] & 0x08) == 0x08)
-		{
-			byte Readmv[5]={255,00,05,00,255};
-			#if (DEBUG==1)
-			mySerial.println("Mode_turnLeft");
-			#endif
-			
-			//Motor.turnLeft(250);
-			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] | 0x08);
-			#if MYSERIAL_DATA
-			//mySerial.write(&Readmv[0],5);
-                        mySerial.print("F050F");
-			#endif
-		}
-		else
-		{
-			//Motor.stop();
-			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0xF7);
-			#if MYSERIAL_DATA
-			//mySerial.write(&Readmv_stop[0],5);
-                        mySerial.print("F000F");
-			#endif
-		}
-		
-	}
-
-	//å³è½¬
-	if((m_w2m_controlMcu.cmd_tag[2] & 0x10) == 0x10)
-    {
-		if((m_w2m_controlMcu.status_w.cmd_byte[1] & 0x10) == 0x10)
-		{
-			byte Readmv[5]={255,00,06,00,255};
-			#if (DEBUG==1)
-			mySerial.println("Mode_turnRight");
-			#endif
-			
-			//Motor.turnRight(250);
-			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] | 0x10);
-			#if MYSERIAL_DATA
-			//mySerial.write(&Readmv[0],5);
-                        mySerial.print("F060F");
-			#endif
-		}
-		else
-		{
-			//Motor.stop();
-			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0xEF);
-			#if MYSERIAL_DATA
-			//mySerial.write(&Readmv_stop[0],5);
-                        mySerial.print("F000F");
-			#endif
-		}
-
-	}
-
-	//åŸåœ°å·¦è½¬
+    
+	//Ô­µØ×ó×ª
 	if((m_w2m_controlMcu.cmd_tag[2] & 0x20) == 0x20)
     {
 		if((m_w2m_controlMcu.status_w.cmd_byte[1] & 0x20) == 0x20)
@@ -201,26 +130,20 @@ void  CmdSendMcuP0(uint8_t *buf)
 			mySerial.println("Mode_turnLeftOrigin");
 			#endif
 			
-			//Motor.turnLeftOrigin(250);
+            Motor.turnLeftOrigin(250);
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] | 0x20);
-			#if MYSERIAL_DATA
-			//mySerial.write(&Readmv[0],5);
-                        mySerial.print("F030F");
-			#endif
+
 		}
 		else
 		{
-			//Motor.stop();
+            Motor.stop();
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0xDF);
-			#if MYSERIAL_DATA
-			//mySerial.write(&Readmv_stop[0],5);
-                        mySerial.print("F000F");
-			#endif
+
 		}
 
 	}
 
-	//åŸåœ°å³è½¬
+	//Ô­µØÓÒ×ª
 	if((m_w2m_controlMcu.cmd_tag[2] & 0x40) == 0x40)
     {
 		if((m_w2m_controlMcu.status_w.cmd_byte[1] & 0x40) == 0x40)
@@ -230,141 +153,20 @@ void  CmdSendMcuP0(uint8_t *buf)
 			mySerial.println("Mode_turnRightOrigin");
 			#endif
 			
-			//Motor.turnRightOrigin(250);
+            Motor.turnRightOrigin(250);
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] | 0x40);
-			#if MYSERIAL_DATA
-			//mySerial.write(&Readmv[0],5);
-                        mySerial.print("F040F");
-			#endif
+
 		}
 		else
 		{
-			//Motor.stop();
+            Motor.stop();
 			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0xFFBF);
-			#if MYSERIAL_DATA
-			//mySerial.write(&Readmv_stop[0],5);
-                        mySerial.print("F000F");
-			#endif
+
 		}
 
-	}
-
-	//åœæ­¢
-	if((m_w2m_controlMcu.cmd_tag[2] & 0x80) == 0x80)
-    {
-		if((m_w2m_controlMcu.status_w.cmd_byte[1] & 0x80) == 0x80)
-		{
-			mySerial.println("Mode_stop");
-			//Motor.stop();
-			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] | 0x80);
-			#if MYSERIAL_DATA
-			//mySerial.write(&Readmv_stop[0],5);
-                        mySerial.print("F000F");
-			#endif
-		}
-		else
-		{
-			//Motor.stop();
-			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0x7F);
-			#if MYSERIAL_DATA
-			//mySerial.write(&Readmv_stop[0],5);
-                        mySerial.print("F000F");
-			#endif
-		}
-
-	}
-
-	//æ‰§è¡Œæœºæ¢°è‡‚åŠ¨ä½œç»„ä¸€
-	if((m_w2m_controlMcu.cmd_tag[1] & 0x01) == 0x01)
-    {
-		byte Readmv[5]={255,65,00,00,255};
-		if((m_w2m_controlMcu.status_w.cmd_byte[0] & 0x01) == 0x01)
-		{
-			#if (MYSERIAL_DATA==1)
-			mySerial.println("Action_group1");
-			#endif
-			#if (MYSERIAL1_DATA==1)
-			//mySerial.write(&Readmv_stop[0],5);//"FF410000FF"
-                        mySerial_1.println("#1GC1\r\n");
-			#endif	
-		
-			m_m2w_mcuStatus.status_w.cmd_byte[0] = (m_m2w_mcuStatus.status_w.cmd_byte[0] | 0x01);
-		}
-		else
-		{
-			#if (MYSERIAL_DATA==1)
-			mySerial.println("Action_group1");
-			#endif
-			#if (MYSERIAL1_DATA==1)
-			//mySerial.write(&Readmv_stop[0],5);//"FF410000FF"
-                        mySerial_1.println("#1GC1\r\n");
-			#endif
-			
-			m_m2w_mcuStatus.status_w.cmd_byte[0] = (m_m2w_mcuStatus.status_w.cmd_byte[0] & 0xFE);
-		}
-	}
-
-	//æ‰§è¡Œæœºæ¢°è‡‚åŠ¨ä½œç»„äºŒ
-	if((m_w2m_controlMcu.cmd_tag[1] & 0x02) == 0x02)
-    {
-		byte Readmv[5]={255,66,00,00,255};
-		if((m_w2m_controlMcu.status_w.cmd_byte[0] & 0x02) == 0x02)
-		{
-  			#if (MYSERIAL_DATA==1)
-			mySerial.println("Action_group2");
-			#endif
-			#if (MYSERIAL1_DATA==1)
-			//mySerial.write(&Readmv_stop[0],5);//"FF420000FF"
-                        mySerial_1.println("#2GC1\r\n");
-			#endif
-
-			m_m2w_mcuStatus.status_w.cmd_byte[0] = (m_m2w_mcuStatus.status_w.cmd_byte[0] | 0x02);
-		}
-		else
-		{
-  			#if (MYSERIAL_DATA==1)
-			mySerial.println("Action_group2");
-			#endif
-			#if (MYSERIAL1_DATA==1)
-			//mySerial.write(&Readmv_stop[0],5);//"FF420000FF"
-                        mySerial_1.println("#2GC1\r\n");
-			#endif
-
-			m_m2w_mcuStatus.status_w.cmd_byte[0] = (m_m2w_mcuStatus.status_w.cmd_byte[0] & 0xFD);
-		}
 	}
 	
-	//æ‰§è¡Œæœºæ¢°è‡‚åŠ¨ä½œè¿˜åŸ
-	if((m_w2m_controlMcu.cmd_tag[1] & 0x04) == 0x04)
-    {
-		byte Readmv[5]={255,64,00,00,255};
-		if((m_w2m_controlMcu.status_w.cmd_byte[0] & 0x04) == 0x04)
-		{
-    			#if (MYSERIAL_DATA==1)
-			mySerial.println("Action_group_Reduction");
-			#endif
-			#if (MYSERIAL1_DATA==1)
-			//mySerial.write(&Readmv_stop[0],5);//"FF400000FF"
-                        mySerial_1.println("#3GC1\r\n");
-			#endif
-
-			m_m2w_mcuStatus.status_w.cmd_byte[0] = (m_m2w_mcuStatus.status_w.cmd_byte[0] | 0x04);
-		}
-		else
-		{
-    			#if (MYSERIAL_DATA==1)
-			mySerial.println("Action_group_Reduction");
-			#endif
-			#if (MYSERIAL1_DATA==1)
-			//mySerial.write(&Readmv_stop[0],5);//"FF400000FF"
-                        mySerial_1.println("#3GC1\r\n");
-			#endif
-
-			m_m2w_mcuStatus.status_w.cmd_byte[0] = (m_m2w_mcuStatus.status_w.cmd_byte[0] & 0xFB);
-		}
-	}
-	
-	//å¾ªè¿¹æ¨¡å¼
+	//Ñ­¼£Ä£Ê½
 	if((m_w2m_controlMcu.cmd_tag[1] & 0x08) == 0x08)
     {
 		if((m_w2m_controlMcu.status_w.cmd_byte[0] & 0x08) == 0x08)
@@ -374,34 +176,29 @@ void  CmdSendMcuP0(uint8_t *buf)
 			mySerial.println("Mode_tracking");
 			#endif
 			
-			//Tracking_section();
+            Tracking_section();
 			m_m2w_mcuStatus.status_w.cmd_byte[0] = (m_m2w_mcuStatus.status_w.cmd_byte[0] | 0x08);
-			#if MYSERIAL_DATA
-			mySerial.write(&Readmv[0],5);
-			#endif
+
 		}
 		else
 		{
 			byte Readmv[5]={255,19,00,00,255};
-			//ä¸­æ–­
-			//Motor.stop();
+			//ÖĞ¶Ï
+            Motor.stop();
 			m_m2w_mcuStatus.status_w.cmd_byte[0] = (m_m2w_mcuStatus.status_w.cmd_byte[0] & 0xF7);
-			#if MYSERIAL_DATA
-			mySerial.write(&Readmv_stop[0],5);
-			mySerial.write(&Readmv[0],5);
-			#endif
+
 		}
 
 	}
 	
-    //è®¾ç½®LEDç»„åˆé¢œè‰²ï¼ˆè‡ªã€é»„ã€ç´«ã€ç²‰ï¼‰
+    //ÉèÖÃLED×éºÏÑÕÉ«£¨×Ô¡¢»Æ¡¢×Ï¡¢·Û£©
     if((m_w2m_controlMcu.cmd_tag[1] & 0x10) == 0x10)
     {
 		tmp_cmd_buf = (m_w2m_controlMcu.status_w.cmd_byte[0] & 0x30) >> 4;
 		#if (DEBUG==1)
 		mySerial.print("tmp_cmd_buf:");
 		mySerial.println(tmp_cmd_buf);
-		//00ï¼šuser define, 01: yellow, 10: purple, 11: pink	
+		//00£ºuser define, 01: yellow, 10: purple, 11: pink	
 		#endif
 		
 		if(tmp_cmd_buf == 0x00)
@@ -446,19 +243,19 @@ void  CmdSendMcuP0(uint8_t *buf)
 	
 	tmp_cmd_buf = (m_w2m_controlMcu.status_w.cmd_byte[0] & 0x30) >> 4;
 	
-	//ç”µæœºè½¬é€Ÿè®¾ç½®
-    if((m_w2m_controlMcu.cmd_tag[1] & 0x20) == 0x20)
-    {
-		//gokit_motorstatus(m_w2m_controlMcu.status_w.motor_speed);
-		#if (DEBUG==1)
-		mySerial.print("motorstatus:");
-		mySerial.println(m_w2m_controlMcu.status_w.motor_speed);
-		#endif
-
-		m_m2w_mcuStatus.status_w.motor_speed = m_w2m_controlMcu.status_w.motor_speed;
-    }
+	//µç»ú×ªËÙÉèÖÃ
+//  if((m_w2m_controlMcu.cmd_tag[1] & 0x20) == 0x20)
+//  {
+//  	//gokit_motorstatus(m_w2m_controlMcu.status_w.motor_speed);
+//  	#if (DEBUG==1)
+//  	mySerial.print("motorstatus:");
+//  	mySerial.println(m_w2m_controlMcu.status_w.motor_speed);
+//  	#endif
+//
+//  	m_m2w_mcuStatus.status_w.motor_speed = m_w2m_controlMcu.status_w.motor_speed;
+//  }
 	
-	//è‡ªå®šä¹‰è‰²å½©ï¼šR
+	//×Ô¶¨ÒåÉ«²Ê£ºR
 	if((m_w2m_controlMcu.cmd_tag[1] & 0x40) == 0x40)
 	{
 		if(tmp_cmd_buf == 0x00){
@@ -467,7 +264,7 @@ void  CmdSendMcuP0(uint8_t *buf)
 		}
 	}
 
-	//è‡ªå®šä¹‰è‰²å½©ï¼šG
+	//×Ô¶¨ÒåÉ«²Ê£ºG
 	if((m_w2m_controlMcu.cmd_tag[1] & 0x80) == 0x80)
 	{
 		if(tmp_cmd_buf == 0x00){
@@ -476,7 +273,7 @@ void  CmdSendMcuP0(uint8_t *buf)
 		}
 	}
 
-	//è‡ªå®šä¹‰è‰²å½©ï¼šB
+	//×Ô¶¨ÒåÉ«²Ê£ºB
 	if((m_w2m_controlMcu.cmd_tag[0] & 0x01) == 0x01)
 	{
 		if(tmp_cmd_buf == 0x00){
@@ -488,6 +285,129 @@ void  CmdSendMcuP0(uint8_t *buf)
 	gokit_ReportStatus(REPORT_STATUS);
 
   }
+}
+
+//Ñ­¼£²¿·Ö
+void Tracking_section()
+{
+	do
+	{
+		int r,m,l;
+		r=digitalRead(IRR);
+		m=digitalRead(IRM);
+		l=digitalRead(IRL);
+		comtemp=Serial.read();
+
+		if(l==HIGH &&m==LOW && r==HIGH)          /*********ÅĞ¶ÏÇ°½ø***********/
+		{
+			Motor.forward(250);
+			delay(2); 
+			while(1)                    //ÕıÏò¹ı³ÌÖĞÅĞ¶ÏÊÇ·ñ×ªÈë×ªÏò
+			{
+				//Ñ­»·ÅĞ¶ÏÁ½²à´«¸ĞÆ÷¶ÈÊı
+				r=digitalRead(IRR);
+				l=digitalRead(IRL);
+				if(r==LOW)
+				{
+					break;
+				}
+				else if(l==LOW)
+				{
+					break;
+				}
+				else
+					Motor.forward(200);                     //¼ì²âµ½l==0»òr==0ËµÃ÷×ªµ½Á½²àÎ»ÖÃ£¬Ìø³öÑ­»·£¬¼ì²âÈı¸ö´«¸ĞÆ÷µÄ×´Ì¬ÔÙ×ö³öÏàÓ¦¶¯×÷
+			}
+		}  
+		else if(l==LOW && m==HIGH && r==HIGH)    /*********ÅĞ¶Ï×ó×ª***********/
+		{
+			Motor.turnLeft(250);
+			delay(2);
+			while(1)                    //×ªÏò¹ı³ÌÖĞÅĞ¶ÏÊÇ·ñ×ªÈëÕıÏò
+			{
+				m=digitalRead(IRM);         //Ñ­»·ÅĞ¶ÏÖĞ¼ä´«¸ĞÆ÷¶ÈÊı£¬
+				if(m==HIGH)
+				{
+					Motor.turnLeft(250);       //Èç¹ûm==1ËµÃ÷»¹Ã»ÓĞ×ªµ½ÖĞ¼äÎ»ÖÃ£¬¼ÌĞø×ó×ª
+					delay(2);
+				}
+				else
+					break;                     //¼ì²âµ½m==0ËµÃ÷×ª¹ıÍ·ÁË£¬Ìø³öÑ­»·£¬¼ì²âÈı¸ö´«¸ĞÆ÷µÄ×´Ì¬ÔÙ×ö³öÏàÓ¦¶¯×÷
+			}
+		}
+		else if(l==HIGH && m==HIGH && r==LOW)    /*********ÅĞ¶ÏÓÒ×ª***********/
+		{
+			Motor.turnRight(250);
+			delay(2);
+			while(1)                    //×ªÏò¹ı³ÌÖĞÅĞ¶ÏÊÇ·ñ×ªÈëÕıÏò
+			{
+				m=digitalRead(IRM);         //Ñ­»·ÅĞ¶ÏÖĞ¼ä´«¸ĞÆ÷¶ÈÊı£¬
+				if(m==HIGH)
+				{
+					Motor.turnRight(250);       //Èç¹ûm==1ËµÃ÷»¹Ã»ÓĞ×ªµ½ÖĞ¼äÎ»ÖÃ£¬¼ÌĞø×ó×ª
+					delay(2);
+				}
+				else
+					break;                     //¼ì²âµ½m==0ËµÃ÷×ª¹ıÍ·ÁË£¬Ìø³öÑ­»·£¬¼ì²âÈı¸ö´«¸ĞÆ÷µÄ×´Ì¬ÔÙ×ö³öÏàÓ¦¶¯×÷
+			}
+		}
+		else if(l==LOW && m==LOW && r==LOW)     /*********ÅĞ¶ÏÍ£Ö¹***********/
+		{
+			Motor.stop();
+			delay(2);
+		}
+		else                        /*********ÎŞ¼ì²âÏÂ½øĞĞÈËÎª¿ØÖÆÄ£Ê½***********/
+		{
+			Motor.stop();
+			while(1)
+			{
+				int r,m,l;
+				int comtemp2;
+				r=digitalRead(IRR);
+				m=digitalRead(IRM);
+				l=digitalRead(IRL);
+				if( Serial.available())
+				{
+					comtemp2=Serial.read();
+					switch(comtemp2)
+					{
+						case 'w':
+								Motor.forward(200);
+								//Ç°½ø±ÜÕÏ¹¦ÄÜ
+								Avoidance_section(comtemp2);
+								delay(1000);
+								break;
+						case 's':
+								Motor.back(200);
+								delay(1000);
+								break;
+						case 'a':
+								Motor.turnLeftOrigin(200);
+								delay(1000);
+								break;
+						case 'd':
+								Motor.turnRightOrigin(200);
+								delay(1000);
+								break; 
+						case 'q':
+								Motor.stop();
+								delay(1000);
+								break;
+						default:
+								Motor.stop();
+								break;
+					}
+				}
+				else if(comtemp2 == 't')
+				{
+					break;
+				}
+				else
+					break;//Ñ­¼£´«¸ĞÆ÷ÔÚ½ÓÊÕµ½ÏßµÄĞÅºÅºóÍË³ö¡°ÎŞ¼ì²âÏÂ½øĞĞÈËÎª¿ØÖÆ¡±Ä£Ê½
+			}
+		}
+	}
+	while(comtemp != 't');
 }
 
 void Handle_uartdata(unsigned char *buf,int len)
@@ -561,7 +481,7 @@ void Handle_uartdata(unsigned char *buf,int len)
 }
 void Handle_keyeven()
 {
-  /*  é•¿æŒ‰æ˜¯æŒ‡æŒ‰ä½æŒ‰é”®3sä»¥ä¸Š   */
+  /*  ³¤°´ÊÇÖ¸°´×¡°´¼ü3sÒÔÉÏ   */
   switch(gokit_keydown())
   {
     case KEY1_SHORT_PRESS:
@@ -716,7 +636,7 @@ void Handle_uartss_data(void)
                 if(rs_i == 3)
                 {
                     rs_Communication_Decode();
-                    //UART_init(); //	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                    //UART_init(); //	???????????????
                 }
                 rs_i = 0;
             }

@@ -43,7 +43,7 @@
 #define	  P0_VER        "00000004"
 #define	  HARD_VER      "00000001"
 #define	  SOFT_VER      "00000001"
-#define   PRODUCT_KEY   "0a5652fc7d7041fbb93910b73fd53ba8"//"6f3074fe43894547a4f1314bd7e3ae0b"
+#define   PRODUCT_KEY   "dc7dc48d329f44129357111cfec47907"
 
 
 

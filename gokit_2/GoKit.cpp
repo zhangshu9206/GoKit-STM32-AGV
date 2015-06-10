@@ -6,7 +6,7 @@
 #include <SoftwareSerial.h>
 #include "GoKit.h"
 
-//MotorCar Motor(Motor_slpin,Motor_dlpin,Motor_srpin,Motor_drpin);// _slpin(PWM),_dlpin, _srpin(PWM),_drpin
+MotorCar Motor(Motor_slpin,Motor_dlpin,Motor_srpin,Motor_drpin);// _slpin(PWM),_dlpin, _srpin(PWM),_drpin
 DHT dht(DHTPIN, DHTTYPE);
 ChainableLED leds(A5, A4, 1);
 #if(DEBUG==1)
@@ -15,9 +15,7 @@ ChainableLED leds(A5, A4, 1);
 #if(MYSERIAL_DATA==1)
 SoftwareSerial mySerial(SS_RX, SS_TX);
 #endif
-#if(MYSERIAL1_DATA==1)
-SoftwareSerial mySerial_1(SS1_RX, SS1_TX);
-#endif
+
 void motortime();
 unsigned char uart_buf[MAX_UART_LEN]={0};
 m2w_returnMcuInfo         m_m2w_returnMcuInfo;
@@ -46,10 +44,6 @@ void GoKit_Init()
   //多个软串口同时使用，只能读取一个串口数据（写不影响）
   //读取的串口选择原则：初始时 谁最后初始只能监听谁
   //解决方法：循环使用mySerial.listen();
-  #if(MYSERIAL1_DATA==1)
-  //自定义引脚通信SoftwareSerial_1初始(通信)
-  mySerial_1.begin(9600);
-  #endif
   #if(MYSERIAL_DATA==1)
   //自定义引脚通信SoftwareSerial初始(通信)
   mySerial.begin(9600);
@@ -68,7 +62,7 @@ void GoKit_Init()
   MsTimer2::set(1000, gokit_timer); // 1000 = 1s period
   MsTimer2::start();
   //电机初始
-  gokit_motor_init();
+//gokit_motor_init();
   
   gokit_setColorRGB(0,0,0);
   McuStatusInit();
@@ -499,14 +493,14 @@ void gokit_setColorRGB(byte red, byte green, byte blue)
  *                   
  *    Add by Alex.lin    --2014-12-25
 ******************************************************/
-void gokit_motor_init()
-{
-  pinMode(MOTOR_PINA,OUTPUT);
-  pinMode(MOTOR_PINB,OUTPUT);
-  digitalWrite(MOTOR_PINB,LOW);
-  digitalWrite(MOTOR_PINA,LOW);
-  gokit_motorstatus(5);
-}
+//void gokit_motor_init()
+//{
+//  pinMode(MOTOR_PINA,OUTPUT);
+//  pinMode(MOTOR_PINB,OUTPUT);
+//  digitalWrite(MOTOR_PINB,LOW);
+//  digitalWrite(MOTOR_PINA,LOW);
+//  gokit_motorstatus(5);
+//}
 /*******************************************************
  *    function      : gokit_motorstatus
  *    Description   : set gokit motor speed.
@@ -514,30 +508,30 @@ void gokit_motor_init()
  *                   
  *    Add by Alex.lin    --2014-12-25
 ******************************************************/
-void gokit_motorstatus( char motor_speed )
-{
-
-  unsigned char Temp_motor_speed=0;
-  if(motor_speed==5) //停止
-  {
-    digitalWrite(MOTOR_PINA,LOW);
-    digitalWrite(MOTOR_PINB,LOW);
-  }
-  if(motor_speed>5)//正转
-  {
-    Temp_motor_speed = (motor_speed-5)*51;
-    if(Temp_motor_speed>255) Temp_motor_speed=255;
-    digitalWrite(MOTOR_PINA,LOW);
-    analogWrite( MOTOR_PINB, Temp_motor_speed);
-  }
-  if(motor_speed<5)//反转
-  {
-    Temp_motor_speed = (255-(5+motor_speed))*51;
-    if(Temp_motor_speed>255) Temp_motor_speed =255;
-    digitalWrite(MOTOR_PINA,HIGH);
-    analogWrite( MOTOR_PINB,Temp_motor_speed );
-  }
-}
+//void gokit_motorstatus( char motor_speed )
+//{
+//
+//  unsigned char Temp_motor_speed=0;
+//  if(motor_speed==5) //停止
+//  {
+//    digitalWrite(MOTOR_PINA,LOW);
+//    digitalWrite(MOTOR_PINB,LOW);
+//  }
+//  if(motor_speed>5)//正转
+//  {
+//    Temp_motor_speed = (motor_speed-5)*51;
+//    if(Temp_motor_speed>255) Temp_motor_speed=255;
+//    digitalWrite(MOTOR_PINA,LOW);
+//    analogWrite( MOTOR_PINB, Temp_motor_speed);
+//  }
+//  if(motor_speed<5)//反转
+//  {
+//    Temp_motor_speed = (255-(5+motor_speed))*51;
+//    if(Temp_motor_speed>255) Temp_motor_speed =255;
+//    digitalWrite(MOTOR_PINA,HIGH);
+//    analogWrite( MOTOR_PINB,Temp_motor_speed );
+//  }
+//}
 
 void gokit_timer()
 {

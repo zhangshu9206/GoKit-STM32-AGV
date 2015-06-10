@@ -6,23 +6,25 @@
 
 #define   DEBUG             0  //软件串口打印
 #define   MYSERIAL_DATA     1  //是否使用自定义软件串口通讯
-#define   MYSERIAL1_DATA    1  //是否使用自定义软件串口1通讯
+
 /*************************** HAL define ***************************/
 
 #define   IRTPIN            2
 #define   DHTPIN            3
-#define   MOTOR_PINA        4
-#define   MOTOR_PINB        5
+#define   Motor_drpin       4
+#define   Motor_srpin       5
 #define   KEY1              6
 #define   KEY2              7
+#define   IR_L_pin          8
+#define   IR_R_pin          9
 #define   Motor_slpin       10
 #define   Motor_dlpin       11
-#define   SS1_RX            8
-#define   SS1_TX            9
 #define   SS_RX             12
 #define   SS_TX             13
 
-#define   DHTTYPE         DHT11 
+/*****************************************************************/
+
+#define   DHTTYPE           DHT11 
 
 #define   KEY1_SHORT_PRESS  1
 #define   KEY1_LONG_PRESS   2
