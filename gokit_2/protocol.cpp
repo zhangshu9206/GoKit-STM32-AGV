@@ -49,15 +49,15 @@ void  CmdSendMcuP0(uint8_t *buf)
     mySerial.println(m_w2m_controlMcu.cmd_tag[0]);
     mySerial.print("m_w2m_controlMcu.cmd_tag[1] :");
     mySerial.println(m_w2m_controlMcu.cmd_tag[1]);
-    mySerial.print("m_w2m_controlMcu.cmd_tag[2] :");
-    mySerial.println(m_w2m_controlMcu.cmd_tag[2]);
+    mySerial.print("m_w2m_controlMcu.cmd_tag[1] :");
+    mySerial.println(m_w2m_controlMcu.cmd_tag[1]);
     #endif
     
     //control LED R && 手动控制模式
-    if((m_w2m_controlMcu.cmd_tag[2] & 0x01) == 0x01)
+    if((m_w2m_controlMcu.cmd_tag[1] & 0x01) == 0x01)
     {
 		//0 bit, 1: R on, 0: R off;
-		if((m_w2m_controlMcu.status_w.cmd_byte[1] & 0x01) == 0x01)
+		if((m_w2m_controlMcu.status_w.cmd_byte & 0x01) == 0x01)
 		{
 			byte Readmv[5]={255,19,00,00,255};
 			#if (DEBUG==1)
@@ -65,20 +65,20 @@ void  CmdSendMcuP0(uint8_t *buf)
 			#endif
 			
 			gokit_setColorRGB(254, 0, 0);
-			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] | 0x01);
+			m_m2w_mcuStatus.status_w.cmd_byte = (m_m2w_mcuStatus.status_w.cmd_byte | 0x01);
 
 		}
 		else
 		{
 			gokit_setColorRGB(0, 0, 0);
-			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0xFE);
+			m_m2w_mcuStatus.status_w.cmd_byte = (m_m2w_mcuStatus.status_w.cmd_byte & 0xFE);
 
 		}
     }
 	//前进
-	if((m_w2m_controlMcu.cmd_tag[2] & 0x02) == 0x02)
+	if((m_w2m_controlMcu.cmd_tag[1] & 0x02) == 0x02)
     {
-		if((m_w2m_controlMcu.status_w.cmd_byte[1] & 0x02) == 0x02)
+		if((m_w2m_controlMcu.status_w.cmd_byte & 0x02) == 0x02)
 		{
 			byte Readmv[5]={255,00,02,00,255};
 			#if (DEBUG==1)
@@ -86,21 +86,21 @@ void  CmdSendMcuP0(uint8_t *buf)
 			#endif
 			
             Motor.forward(250);
-			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] | 0x02);
+			m_m2w_mcuStatus.status_w.cmd_byte = (m_m2w_mcuStatus.status_w.cmd_byte | 0x02);
 
 		}
 		else
 		{
             Motor.stop();
-			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0xFD);
+			m_m2w_mcuStatus.status_w.cmd_byte = (m_m2w_mcuStatus.status_w.cmd_byte & 0xFD);
 
 		}
 		
 	}
 	//后退
-	if((m_w2m_controlMcu.cmd_tag[2] & 0x04) == 0x04)
+	if((m_w2m_controlMcu.cmd_tag[1] & 0x04) == 0x04)
     {
-		if((m_w2m_controlMcu.status_w.cmd_byte[1] & 0x04) == 0x04)
+		if((m_w2m_controlMcu.status_w.cmd_byte & 0x04) == 0x04)
 		{
 			byte Readmv[5]={255,00,01,00,255};
 			#if (DEBUG==1)
@@ -108,22 +108,22 @@ void  CmdSendMcuP0(uint8_t *buf)
 			#endif
 			
             Motor.back(250);
-			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] | 0x04);
+			m_m2w_mcuStatus.status_w.cmd_byte = (m_m2w_mcuStatus.status_w.cmd_byte | 0x04);
 
 		}
 		else
 		{
             Motor.stop();
-			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0xFB);
+			m_m2w_mcuStatus.status_w.cmd_byte = (m_m2w_mcuStatus.status_w.cmd_byte & 0xFB);
 
 		}
 		
 	}
     
 	//原地左转
-	if((m_w2m_controlMcu.cmd_tag[2] & 0x20) == 0x20)
+	if((m_w2m_controlMcu.cmd_tag[1] & 0x08) == 0x08)
     {
-		if((m_w2m_controlMcu.status_w.cmd_byte[1] & 0x20) == 0x20)
+        if((m_w2m_controlMcu.status_w.cmd_byte & 0x08) == 0x08) 
 		{
 			byte Readmv[5]={255,00,03,00,255};
 			#if (DEBUG==1)
@@ -131,22 +131,22 @@ void  CmdSendMcuP0(uint8_t *buf)
 			#endif
 			
             Motor.turnLeftOrigin(250);
-			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] | 0x20);
+			m_m2w_mcuStatus.status_w.cmd_byte = (m_m2w_mcuStatus.status_w.cmd_byte | 0x08);
 
 		}
 		else
 		{
             Motor.stop();
-			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0xDF);
+			m_m2w_mcuStatus.status_w.cmd_byte = (m_m2w_mcuStatus.status_w.cmd_byte & 0xF7);
 
 		}
 
 	}
 
 	//原地右转
-	if((m_w2m_controlMcu.cmd_tag[2] & 0x40) == 0x40)
+	if((m_w2m_controlMcu.cmd_tag[1] & 0x10) == 0x10)
     {
-		if((m_w2m_controlMcu.status_w.cmd_byte[1] & 0x40) == 0x40)
+        if((m_w2m_controlMcu.status_w.cmd_byte & 0x10) == 0x10) 
 		{
 			byte Readmv[5]={255,00,04,00,255};
 			#if (DEBUG==1)
@@ -154,22 +154,22 @@ void  CmdSendMcuP0(uint8_t *buf)
 			#endif
 			
             Motor.turnRightOrigin(250);
-			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] | 0x40);
+			m_m2w_mcuStatus.status_w.cmd_byte = (m_m2w_mcuStatus.status_w.cmd_byte | 0x10);
 
 		}
 		else
 		{
             Motor.stop();
-			m_m2w_mcuStatus.status_w.cmd_byte[1] = (m_m2w_mcuStatus.status_w.cmd_byte[1] & 0xFFBF);
+			m_m2w_mcuStatus.status_w.cmd_byte = (m_m2w_mcuStatus.status_w.cmd_byte & 0xEF);
 
 		}
 
 	}
 	
 	//循迹模式
-	if((m_w2m_controlMcu.cmd_tag[1] & 0x08) == 0x08)
+	if((m_w2m_controlMcu.cmd_tag[1] & 0x20) == 0x20)
     {
-		if((m_w2m_controlMcu.status_w.cmd_byte[0] & 0x08) == 0x08)
+        if((m_w2m_controlMcu.status_w.cmd_byte & 0x20) == 0x20) 
 		{
 			byte Readmv[5]={255,19,02,00,255};
 			#if (DEBUG==1)
@@ -177,7 +177,7 @@ void  CmdSendMcuP0(uint8_t *buf)
 			#endif
 			
             Tracking_section();
-			m_m2w_mcuStatus.status_w.cmd_byte[0] = (m_m2w_mcuStatus.status_w.cmd_byte[0] | 0x08);
+			m_m2w_mcuStatus.status_w.cmd_byte = (m_m2w_mcuStatus.status_w.cmd_byte | 0x20);
 
 		}
 		else
@@ -185,16 +185,16 @@ void  CmdSendMcuP0(uint8_t *buf)
 			byte Readmv[5]={255,19,00,00,255};
 			//中断
             Motor.stop();
-			m_m2w_mcuStatus.status_w.cmd_byte[0] = (m_m2w_mcuStatus.status_w.cmd_byte[0] & 0xF7);
+			m_m2w_mcuStatus.status_w.cmd_byte = (m_m2w_mcuStatus.status_w.cmd_byte & 0xDF);
 
 		}
 
 	}
 	
     //设置LED组合颜色（自、黄、紫、粉）
-    if((m_w2m_controlMcu.cmd_tag[1] & 0x10) == 0x10)
+    if((m_w2m_controlMcu.cmd_tag[1] & 0x40) == 0x40)
     {
-		tmp_cmd_buf = (m_w2m_controlMcu.status_w.cmd_byte[0] & 0x30) >> 4;
+		tmp_cmd_buf = (m_w2m_controlMcu.status_w.cmd_byte & 0xC0) >> 6;
 		#if (DEBUG==1)
 		mySerial.print("tmp_cmd_buf:");
 		mySerial.println(tmp_cmd_buf);
@@ -208,7 +208,7 @@ void  CmdSendMcuP0(uint8_t *buf)
 			#endif
 			
 			gokit_setColorRGB(m_w2m_controlMcu.status_w.led_r, m_m2w_mcuStatus.status_w.led_g, m_m2w_mcuStatus.status_w.led_b); 
-			m_m2w_mcuStatus.status_w.cmd_byte[0] = (m_m2w_mcuStatus.status_w.cmd_byte[0] & 0xCF);
+			m_m2w_mcuStatus.status_w.cmd_byte = (m_m2w_mcuStatus.status_w.cmd_byte & 0x3F);
 		}
 		else if(tmp_cmd_buf == 0x01)
 		{   
@@ -217,8 +217,8 @@ void  CmdSendMcuP0(uint8_t *buf)
 			#endif
 			
 			gokit_setColorRGB(254, 70, 0);
-			m_m2w_mcuStatus.status_w.cmd_byte[0] = (m_m2w_mcuStatus.status_w.cmd_byte[0] | 0x10);
-			m_m2w_mcuStatus.status_w.cmd_byte[0] = (m_m2w_mcuStatus.status_w.cmd_byte[0] & 0xDF);
+			m_m2w_mcuStatus.status_w.cmd_byte = (m_m2w_mcuStatus.status_w.cmd_byte | 0x40);
+			m_m2w_mcuStatus.status_w.cmd_byte = (m_m2w_mcuStatus.status_w.cmd_byte & 0x7F);
 		}
 		else if(tmp_cmd_buf == 0x02)
 		{
@@ -227,8 +227,8 @@ void  CmdSendMcuP0(uint8_t *buf)
 			#endif
 			
 			gokit_setColorRGB(254, 0, 70);  
-			m_m2w_mcuStatus.status_w.cmd_byte[0] = (m_m2w_mcuStatus.status_w.cmd_byte[0] | 0x20);
-			m_m2w_mcuStatus.status_w.cmd_byte[0] = (m_m2w_mcuStatus.status_w.cmd_byte[0] & 0xEF);
+			m_m2w_mcuStatus.status_w.cmd_byte = (m_m2w_mcuStatus.status_w.cmd_byte | 0x80);
+			m_m2w_mcuStatus.status_w.cmd_byte = (m_m2w_mcuStatus.status_w.cmd_byte & 0xBF);
 		}
 		else if(tmp_cmd_buf == 0x03)
 		{
@@ -237,11 +237,11 @@ void  CmdSendMcuP0(uint8_t *buf)
 			#endif
 			
 			gokit_setColorRGB(238, 30, 30);
-			m_m2w_mcuStatus.status_w.cmd_byte[0] = (m_m2w_mcuStatus.status_w.cmd_byte[0] | 0x30);
+			m_m2w_mcuStatus.status_w.cmd_byte = (m_m2w_mcuStatus.status_w.cmd_byte | 0xC0);
 		}
     }
 	
-	tmp_cmd_buf = (m_w2m_controlMcu.status_w.cmd_byte[0] & 0x30) >> 4;
+	tmp_cmd_buf = (m_w2m_controlMcu.status_w.cmd_byte & 0xC0) >> 6;
 	
 	//电机转速设置
 //  if((m_w2m_controlMcu.cmd_tag[1] & 0x20) == 0x20)
@@ -256,7 +256,7 @@ void  CmdSendMcuP0(uint8_t *buf)
 //  }
 	
 	//自定义色彩：R
-	if((m_w2m_controlMcu.cmd_tag[1] & 0x40) == 0x40)
+	if((m_w2m_controlMcu.cmd_tag[1] & 0x80) == 0x80)
 	{
 		if(tmp_cmd_buf == 0x00){
 			gokit_setColorRGB(m_w2m_controlMcu.status_w.led_r, m_m2w_mcuStatus.status_w.led_g, m_m2w_mcuStatus.status_w.led_b);     
@@ -265,7 +265,7 @@ void  CmdSendMcuP0(uint8_t *buf)
 	}
 
 	//自定义色彩：G
-	if((m_w2m_controlMcu.cmd_tag[1] & 0x80) == 0x80)
+	if((m_w2m_controlMcu.cmd_tag[0] & 0x01) == 0x01)
 	{
 		if(tmp_cmd_buf == 0x00){
 			gokit_setColorRGB(m_m2w_mcuStatus.status_w.led_r, m_w2m_controlMcu.status_w.led_g, m_m2w_mcuStatus.status_w.led_b);     
@@ -274,7 +274,7 @@ void  CmdSendMcuP0(uint8_t *buf)
 	}
 
 	//自定义色彩：B
-	if((m_w2m_controlMcu.cmd_tag[0] & 0x01) == 0x01)
+	if((m_w2m_controlMcu.cmd_tag[0] & 0x02) == 0x02)
 	{
 		if(tmp_cmd_buf == 0x00){
 			gokit_setColorRGB(m_m2w_mcuStatus.status_w.led_r, m_m2w_mcuStatus.status_w.led_g, m_w2m_controlMcu.status_w.led_b);     
@@ -290,124 +290,7 @@ void  CmdSendMcuP0(uint8_t *buf)
 //循迹部分
 void Tracking_section()
 {
-	do
-	{
-		int r,m,l;
-		r=digitalRead(IRR);
-		m=digitalRead(IRM);
-		l=digitalRead(IRL);
-		comtemp=Serial.read();
 
-		if(l==HIGH &&m==LOW && r==HIGH)          /*********判断前进***********/
-		{
-			Motor.forward(250);
-			delay(2); 
-			while(1)                    //正向过程中判断是否转入转向
-			{
-				//循环判断两侧传感器度数
-				r=digitalRead(IRR);
-				l=digitalRead(IRL);
-				if(r==LOW)
-				{
-					break;
-				}
-				else if(l==LOW)
-				{
-					break;
-				}
-				else
-					Motor.forward(200);                     //检测到l==0或r==0说明转到两侧位置，跳出循环，检测三个传感器的状态再做出相应动作
-			}
-		}  
-		else if(l==LOW && m==HIGH && r==HIGH)    /*********判断左转***********/
-		{
-			Motor.turnLeft(250);
-			delay(2);
-			while(1)                    //转向过程中判断是否转入正向
-			{
-				m=digitalRead(IRM);         //循环判断中间传感器度数，
-				if(m==HIGH)
-				{
-					Motor.turnLeft(250);       //如果m==1说明还没有转到中间位置，继续左转
-					delay(2);
-				}
-				else
-					break;                     //检测到m==0说明转过头了，跳出循环，检测三个传感器的状态再做出相应动作
-			}
-		}
-		else if(l==HIGH && m==HIGH && r==LOW)    /*********判断右转***********/
-		{
-			Motor.turnRight(250);
-			delay(2);
-			while(1)                    //转向过程中判断是否转入正向
-			{
-				m=digitalRead(IRM);         //循环判断中间传感器度数，
-				if(m==HIGH)
-				{
-					Motor.turnRight(250);       //如果m==1说明还没有转到中间位置，继续左转
-					delay(2);
-				}
-				else
-					break;                     //检测到m==0说明转过头了，跳出循环，检测三个传感器的状态再做出相应动作
-			}
-		}
-		else if(l==LOW && m==LOW && r==LOW)     /*********判断停止***********/
-		{
-			Motor.stop();
-			delay(2);
-		}
-		else                        /*********无检测下进行人为控制模式***********/
-		{
-			Motor.stop();
-			while(1)
-			{
-				int r,m,l;
-				int comtemp2;
-				r=digitalRead(IRR);
-				m=digitalRead(IRM);
-				l=digitalRead(IRL);
-				if( Serial.available())
-				{
-					comtemp2=Serial.read();
-					switch(comtemp2)
-					{
-						case 'w':
-								Motor.forward(200);
-								//前进避障功能
-								Avoidance_section(comtemp2);
-								delay(1000);
-								break;
-						case 's':
-								Motor.back(200);
-								delay(1000);
-								break;
-						case 'a':
-								Motor.turnLeftOrigin(200);
-								delay(1000);
-								break;
-						case 'd':
-								Motor.turnRightOrigin(200);
-								delay(1000);
-								break; 
-						case 'q':
-								Motor.stop();
-								delay(1000);
-								break;
-						default:
-								Motor.stop();
-								break;
-					}
-				}
-				else if(comtemp2 == 't')
-				{
-					break;
-				}
-				else
-					break;//循迹传感器在接收到线的信号后退出“无检测下进行人为控制”模式
-			}
-		}
-	}
-	while(comtemp != 't');
 }
 
 void Handle_uartdata(unsigned char *buf,int len)
@@ -608,53 +491,10 @@ void rs_Communication_Decode(void)
     }
 }
 
-void Handle_uartss_data(void)
-{
-    unsigned char outputByte; 
-
-    if(mySerial.available() > 0 )
-    {
-        unsigned char outputByte = 0; 
-        outputByte = mySerial.read(); 
-        
-        //Serial.print("outputByte:");
-        //Serial.println(outputByte);
-        
-        if(rs_rec_flag == 0)
-        {
-            if(outputByte == 'F')
-            {
-                rs_rec_flag = 1;
-                rs_i = 0;
-            }
-        }
-        else
-        {
-            if(outputByte == 'F')
-            {
-                rs_rec_flag = 0;
-                if(rs_i == 3)
-                {
-                    rs_Communication_Decode();
-                    //UART_init(); //	???????????????
-                }
-                rs_i = 0;
-            }
-            else
-            {
-                rs_buffer[rs_i] = outputByte;
-                rs_i++;
-            }
-        } 
-    } 
-  
-}
-
 void GoKit_Handle(void)
 {
   Handle_uartdata(  uart_buf,get_onepackage(uart_buf));
   Handle_keyeven();
   Check_Status();
-  Handle_uartss_data();
 }
 

@@ -11,12 +11,12 @@
 
 #define   IRTPIN            2
 #define   DHTPIN            3
-#define   Motor_drpin       4
-#define   Motor_srpin       5
+#define   IR_L_pin       4
+#define   IR_R_pin       5
 #define   KEY1              6
 #define   KEY2              7
-#define   IR_L_pin          8
-#define   IR_R_pin          9
+#define   Motor_drpin          8//IR_L_pin
+#define   Motor_srpin          9//IR_R_pin
 #define   Motor_slpin       10
 #define   Motor_dlpin       11
 #define   SS_RX             12
@@ -43,7 +43,7 @@
 #define   MAX_UART_LEN      100
 #define   UART_RX_BUF_SIZE  100
 
-//extern MotorCar Motor;
+extern MotorCar Motor;
 extern  unsigned char uart_buf[MAX_UART_LEN];
 extern SoftwareSerial mySerial;
 extern SoftwareSerial mySerial_1;

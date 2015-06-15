@@ -60,8 +60,7 @@ typedef struct  _pro_errorCmd                   pro_errorCmd;
 
 struct  _status_writable
 {
-  uint8_t             cmd_byte[2];
-  uint8_t             motor_speed;
+  uint8_t             cmd_byte;
   uint8_t             led_r;
   uint8_t             led_g;
   uint8_t             led_b;
@@ -70,11 +69,11 @@ struct  _status_writable
 struct  _status_readonly
 {
   uint8_t             ir_status;//Infrared1,Infrared2
-  uint8_t             urf_byte;
+//uint8_t             urf_byte;
   uint8_t             temputure;
   uint8_t             humidity;
-  uint8_t             alert_byte;//Alert_1,Alert_2,Fault_IR
-  uint8_t             fault_byte;//Fault_Motor,Fault_URF,Fault_LED,Fault_TemHum
+//uint8_t             alert_byte;//Alert_1,Alert_2,Fault_IR
+//uint8_t             fault_byte;//Fault_Motor,Fault_URF,Fault_LED,Fault_TemHum
 };
 struct  _pro_headPart
 {
@@ -116,7 +115,7 @@ struct  _w2m_controlMcu
 {
   pro_headPart        head_part;
   uint8_t             sub_cmd;//action(1B) 
-  uint8_t             cmd_tag[3];//attr_flags(3B)
+  uint8_t             cmd_tag[2];//attr_flags(3B)
   status_writable     status_w;//attr_vals(6B)
   uint8_t             sum;//checksum(1B)
 };
@@ -142,6 +141,6 @@ void Handle_uartdata(unsigned char *buf,int len);
 void Handle_keyeven();
 void Check_Status();
 void rs_Communication_Decode(void);
-void Handle_uartss_data(void);
+void Tracking_section(void);
 void GoKit_Handle();
 #endif

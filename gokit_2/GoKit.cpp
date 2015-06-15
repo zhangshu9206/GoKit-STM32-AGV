@@ -209,7 +209,7 @@ int McuStatusInit()
   m_m2w_mcuStatus.head_part.head[1] = 0xFF;
   m_m2w_mcuStatus.head_part.len = exchangeBytes(sizeof(m2w_mcuStatus) - 4);
   gokit_DHT11_Read_Data((uint8_t *)&(m_m2w_mcuStatus.status_r.temputure), (uint8_t *)&(m_m2w_mcuStatus.status_r.humidity));
-  m_m2w_mcuStatus.status_w.motor_speed = 5;
+  //m_m2w_mcuStatus.status_w.motor_speed = 5;
   
   //
   memset(&m_m2w_setModule, 0, sizeof(m2w_setModule));
@@ -461,7 +461,7 @@ void gokit_IR_event()
   {
     #if (DEBUG==1)
     Serial.println("gokit_IR_event! no happen. ");
-    mySerial.println("gokit_IR_event! no happen. ");
+    //mySerial.println("gokit_IR_event! no happen. ");
     #endif
     m_m2w_mcuStatus.status_r.ir_status &= ~(1<<0);
   }
@@ -469,7 +469,7 @@ void gokit_IR_event()
   {
     #if (DEBUG==1)
     Serial.println("gokit_IR_event! happen. ");
-    mySerial.println("gokit_IR_event! happen. ");
+    //mySerial.println("gokit_IR_event! happen. ");
     #endif
     m_m2w_mcuStatus.status_r.ir_status |= (1<<0);
   }
